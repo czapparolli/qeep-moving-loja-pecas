@@ -43,9 +43,15 @@ public class ProgramaLojaMessias {
 				pecaDao.consultaPecaPorCodigo(teclado);
 				break;
 			case 3:
-				pecaDao.litasTodasAsPecasEmEstoque();
+				pecaDao.listaTodasAsPecasEmEstoque();
 				break;
-
+			case 4:
+				pecaDao.listaPecaPorLetra(teclado);
+				break;
+				
+			case 6:
+				pecaDao.listaPecaPorCategoria(teclado);
+				break;
 			default:
 				System.out.println("Opção inválida!");
 

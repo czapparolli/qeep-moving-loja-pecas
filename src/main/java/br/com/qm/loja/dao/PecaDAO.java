@@ -75,7 +75,7 @@ public class PecaDAO {
 
 	}
 
-	public List<Peca> litasTodasAsPecasEmEstoque() {
+	public List<Peca> listaTodasAsPecasEmEstoque() {
 
 		// Peca consulta = new Peca();
 
@@ -90,7 +90,7 @@ public class PecaDAO {
 		for (Peca consulta1 : pecas) {
 			System.out.println("-------------------------------------------------");
 			System.out.printf(
-					"\nCódigo de barras: %d \nNome da peça: %s \nModelo do carro: %s \nPreço de custo: R$ %.2f \nPreço de venda: R$ %.2f \nQuantidade atual em estoque: %d \n\n",
+					"\nCódigo de barras: %d \nNome da peça: %s \nModelo do carro: %s \nPreço de custo: R$ %.2f \nPreço de venda: R$ %.2f \nQuantidade atual em estoque: %d \nCategoria %s \n\n",
 					consulta1.getCodigoDeBarras(), consulta1.getNome(), consulta1.getModeloCarro(),
 					consulta1.getPrecoCusto(), consulta1.getPrecoVenda(), consulta1.getQuantidadeEmEstoque(),
 					consulta1.getCategoria());
@@ -99,13 +99,60 @@ public class PecaDAO {
 		return query.getResultList();
 	}
 
-	public List<Peca> listarPecasComEstoque() {
-		Query query = manager.createQuery("select p from Peca as p");
-		// where p.codigoDeBarras = 1
-		// List<Peca> pecas =
-		// query.setParameter("codigoDeBarras", 1);
-		// query.setParameter("modeloCarro", "Onix");
+	public List<Peca> listaPecaPorLetra(Scanner teclado) {
+		teclado.nextLine();
+
+		System.out.println("\nBem vindo ao menu de consultar peças, vamos começar...");
+		System.out.print("\nDigite uma letra para listar todas as peças em estoque começadas por ela: ");
+		String input = teclado.nextLine();
+
+		Query query = manager.createQuery("select p from Peca as p where p.nome like '" + input + "%'");
+		query.setParameter("nome", "'" + input + "%'");
+		// '"+input+"'%");
+
+		List<Peca> pecas = query.getResultList();
+
+		for (Peca consulta : pecas) {
+			System.out.println("-------------------------------------------------");
+			System.out.printf(
+					"\nCódigo de barras: %d \nNome da peça: %s \nModelo do carro: %s \nPreço de custo: R$ %.2f \nPreço de venda: R$ %.2f \nQuantidade atual em estoque: %d \n\n",
+					consulta.getCodigoDeBarras(), consulta.getNome(), consulta.getModeloCarro(),
+					consulta.getPrecoCusto(), consulta.getPrecoVenda(), consulta.getQuantidadeEmEstoque(),
+					consulta.getCategoria());
+		}
+
 		return query.getResultList();
+
+	}
+
+	public List<Peca> listaPecaPorCategoria(Scanner teclado) {
+		teclado.nextLine();
+
+		System.out.println("\nBem vindo ao menu de consultar peças, vamos começar...");
+		System.out.print("\nDigite uma categoria para listar todas as peças dela:  ");
+		String input = teclado.nextLine();
+		
+		Query query = manager.createQuery("select p from Peca as p where p.categoria = :categoria");
+		query.setParameter("categoria", input);
+		//input + "%"
+
+		List<Peca> pecas = query.getResultList();
+		
+		if (pecas.equals(null)) {
+			System.out.println("é nulo");
+		} else {
+			for (Peca consulta : pecas) {
+				System.out.println("-------------------------------------------------");
+				System.out.printf(
+						"\nCódigo de barras: %d \nNome da peça: %s \nModelo do carro: %s \nPreço de custo: R$ %.2f \nPreço de venda: R$ %.2f \nQuantidade atual em estoque: %d \nCategoria %s \n\n",
+						consulta.getCodigoDeBarras(), consulta.getNome(), consulta.getModeloCarro(),
+						consulta.getPrecoCusto(), consulta.getPrecoVenda(), consulta.getQuantidadeEmEstoque(),
+						consulta.getCategoria());
+			}
+		}
+
+		return query.getResultList();
+
 	}
 
 	public boolean alteraPeca(Peca loja) {
