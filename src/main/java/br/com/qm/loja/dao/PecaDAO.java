@@ -1,0 +1,123 @@
+package br.com.qm.loja.dao;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
+
+import br.com.qm.loja.pojo.Peca;
+
+public class PecaDAO {
+
+	private EntityManager manager;
+
+	public PecaDAO(EntityManager manager) {
+		EntityManagerFactory factory = Persistence.createEntityManagerFactory("pecas");
+		this.manager = factory.createEntityManager();
+	}
+
+	public void cadastraPeca(Scanner teclado) {
+
+		Peca cadastra = new Peca();
+
+		System.out.println("\nBem vindo ao menu de cadastrar peças, vamos começar...");
+		System.out.print("\nDigite o número do código de barras da peça: ");
+		int codigoDeBarras = teclado.nextInt();
+		teclado.nextLine();
+		System.out.print("\nDigite o nome da peça: ");
+		String nomePeca = teclado.nextLine();
+		System.out.print("\nDigite o modelo do carro para qual essa peça corresponde: ");
+		String modeloCarro = teclado.nextLine();
+		System.out.print("\nDigite o preço de custo da peça: ");
+		float precoCusto = teclado.nextFloat();
+		System.out.print("\nDigite o preço que você irá vender a peça: ");
+		float precoVenda = teclado.nextFloat();
+		System.out.print("\nDigite quantas unidades dessa peça serão adicionadas ao estoque: ");
+		int quantidadeEmEstoque = teclado.nextInt();
+		teclado.nextLine();
+		System.out.print("\nDigite a categoria correspondente desta peça (EX: Amortecedores, Freios e etc):  ");
+		String categoria = teclado.nextLine();
+
+		cadastra.setCodigoDeBarras(codigoDeBarras);
+		cadastra.setNome(nomePeca);
+		cadastra.setModeloCarro(modeloCarro);
+		cadastra.setPrecoCusto(precoCusto);
+		cadastra.setPrecoVenda(precoVenda);
+		cadastra.setQuantidadeEmEstoque(quantidadeEmEstoque);
+		cadastra.setCategoria(categoria);
+
+		manager.getTransaction().begin();
+		manager.persist(cadastra);
+		manager.getTransaction().commit();
+
+		System.out.println("Peça cadastrada com sucesso !");
+	}
+
+	public void consultaPecaPorCodigo(Scanner teclado) {
+
+		Peca consulta = new Peca();
+
+		System.out.println("\nBem vindo ao menu de consultar peças, vamos começar...");
+		System.out.print("\nDigite o número do código de barras da peça para consultar: ");
+		int codigoDeBarras = teclado.nextInt();
+
+		consulta = manager.find(Peca.class, codigoDeBarras);
+
+		System.out.printf(
+				"\nCódigo de barras: %d \nNome da peça: %s \nModelo do carro: %s \nPreço de custo: R$ %.2f \nPreço de venda: R$ %.2f \nQuantidade atual em estoque: %d \n",
+				consulta.getCodigoDeBarras(), consulta.getNome(), consulta.getModeloCarro(), consulta.getPrecoCusto(),
+				consulta.getPrecoVenda(), consulta.getQuantidadeEmEstoque(), consulta.getCategoria());
+
+	}
+
+	public List<Peca> litasTodasAsPecasEmEstoque() {
+
+		// Peca consulta = new Peca();
+
+		System.out.println("\nBem vindo ao menu de listagem de peças, vamos começar...");
+
+		Query query = manager.createQuery("select p from Peca as p");
+
+		// query.getResultList();
+
+		List<Peca> pecas = query.getResultList();
+
+		for (Peca consulta1 : pecas) {
+			System.out.println("-------------------------------------------------");
+			System.out.printf(
+					"\nCódigo de barras: %d \nNome da peça: %s \nModelo do carro: %s \nPreço de custo: R$ %.2f \nPreço de venda: R$ %.2f \nQuantidade atual em estoque: %d \n\n",
+					consulta1.getCodigoDeBarras(), consulta1.getNome(), consulta1.getModeloCarro(),
+					consulta1.getPrecoCusto(), consulta1.getPrecoVenda(), consulta1.getQuantidadeEmEstoque(),
+					consulta1.getCategoria());
+		}
+
+		return query.getResultList();
+	}
+
+	public List<Peca> listarPecasComEstoque() {
+		Query query = manager.createQuery("select p from Peca as p");
+		// where p.codigoDeBarras = 1
+		// List<Peca> pecas =
+		// query.setParameter("codigoDeBarras", 1);
+		// query.setParameter("modeloCarro", "Onix");
+		return query.getResultList();
+	}
+
+	public boolean alteraPeca(Peca loja) {
+
+		Peca lojaDb = manager.find(Peca.class, loja.getCodigoDeBarras());
+		lojaDb.setCodigoDeBarras(0);
+
+		manager.getTransaction().begin();
+		manager.merge(lojaDb);
+		manager.getTransaction().commit();
+
+		return true;
+	}
+
+}
