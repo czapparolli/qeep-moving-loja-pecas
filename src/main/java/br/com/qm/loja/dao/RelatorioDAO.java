@@ -24,8 +24,14 @@ public class RelatorioDAO {
 	
 	public  void escritor() throws IOException {
 		PecaDAO pecaDao = new PecaDAO(manager);
-		List<Peca> teste = new ArrayList();
+		List<Peca> teste = pecaDao.fimEstoquePrograma();
 		FileWriter writer = new FileWriter("arquivo.txt");
+		//pecaDao.fimEstoquePrograma();
+		for (Peca str : teste) {
+			writer.write(str + System.lineSeparator());
+			
+		}
+		writer.close();
 		//writer.write(null);
 	}
 

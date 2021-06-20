@@ -100,7 +100,32 @@ public class PecaDAO {
 		}
 		return query.getResultList();
 	}
+	
+	public List<Peca> listaTodasAsPecasPorModelo(Scanner teclado) {
 
+
+		System.out.println("\nBem vindo ao menu de listagem de peças por modelo de carro, vamos começar...");
+		System.out.println("Digite o modelo do carro para pesquisar todas as peças disponíveis para ele em estoque: ");
+		String input = teclado.nextLine();
+		
+		Query query = manager.createQuery("select p from Peca as p where p.modelo = :modelo");
+		query.setParameter("modelo", "%"+input+"%");
+
+		// query.getResultList();
+
+		List<Peca> relatorioInicio = query.getResultList();
+
+		for (Peca consulta1 : relatorioInicio) {
+			System.out.println("-------------------------------------------------");
+			System.out.printf(
+					"\nCódigo de barras: %d \nNome da peça: %s \nModelo do carro: %s \nPreço de custo: R$ %.2f \nPreço de venda: R$ %.2f \nQuantidade atual em estoque: %d \nCategoria %s \n\n",
+					consulta1.getCodigoDeBarras(), consulta1.getNome(), consulta1.getModeloCarro(),
+					consulta1.getPrecoCusto(), consulta1.getPrecoVenda(), consulta1.getQuantidadeEmEstoque(),
+					consulta1.getCategoria());
+		}
+		return query.getResultList();
+	}
+	
 	public List<Peca> listaPecaPorLetra(Scanner teclado) {
 		teclado.nextLine();
 
@@ -109,8 +134,7 @@ public class PecaDAO {
 		String input = teclado.nextLine();
 
 		Query query = manager.createQuery("select p from Peca as p where p.nome = :nome");
-		query.setParameter("nome", input);
-		// '"+input+"'%");
+		query.setParameter("nome", "%"+input+"%");
 
 		List<Peca> pecas = query.getResultList();
 
@@ -122,7 +146,6 @@ public class PecaDAO {
 					consulta.getPrecoCusto(), consulta.getPrecoVenda(), consulta.getQuantidadeEmEstoque(),
 					consulta.getCategoria());
 		}
-		manager.close();
 		return query.getResultList();
 		
 
@@ -135,9 +158,9 @@ public class PecaDAO {
 		System.out.print("\nDigite uma categoria para listar todas as peças dela:  ");
 		String input = teclado.nextLine();
 
-		Query query = manager.createQuery("select p from Peca as p where p.categoria = :categoria");
-		query.setParameter("categoria", input);
-		// input + "%"
+		Query query = manager.createQuery("select p from Peca as p where p.categoria like :categoria");
+		
+		query.setParameter("categoria", "%"+input+"%");
 
 		List<Peca> pecas = query.getResultList();
 
@@ -153,7 +176,6 @@ public class PecaDAO {
 						consulta.getCategoria());
 			}
 		}
-		manager.close();
 
 		return query.getResultList();
 

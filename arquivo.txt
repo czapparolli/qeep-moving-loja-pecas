@@ -1,0 +1,5 @@
+Peca [codigoDeBarras=1, nome=Amortecedor Diateiro DTX, modeloCarro=Onix, precoCusto=350.0, precoVenda=500.0, quantidadeEmEstoque=4, categoria=Amortecedores]
+Peca [codigoDeBarras=2, nome=Amortecedor Traseiro DTX, modeloCarro=Onix, precoCusto=380.0, precoVenda=530.0, quantidadeEmEstoque=7, categoria=Amortecedores]
+Peca [codigoDeBarras=3, nome=Embreagem RPO, modeloCarro=Celta, precoCusto=610.0, precoVenda=850.0, quantidadeEmEstoque=5, categoria=Embreagens]
+Peca [codigoDeBarras=4, nome=Fluído de Freio R10, modeloCarro=Gol, precoCusto=120.0, precoVenda=200.0, quantidadeEmEstoque=200, categoria=Freios]
+Peca [codigoDeBarras=5, nome=Roda de Aluminio Aro 20, modeloCarro=Lancer, precoCusto=1200.0, precoVenda=3500.0, quantidadeEmEstoque=8, categoria=Rodas]

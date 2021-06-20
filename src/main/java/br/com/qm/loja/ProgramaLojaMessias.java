@@ -27,8 +27,7 @@ public class ProgramaLojaMessias {
 			System.out.println("[2] - consultar uma peça pelo seu código de barras");
 			System.out.println("[3] - listar todas as peças em estoque");
 			System.out.println("[4] - listar todas as peças começadas com o nome começado por um determinado texto");
-			System.out.println(
-					"[5] - listar todas as peças para um determinado modelo de carro (o carro deverá ser lido)");
+			System.out.println("[5] - listar todas as peças para um determinado modelo de carro (o carro deverá ser lido)");
 			System.out.println("[6] - listar todas as peças de uma determinada categoria");
 			System.out.println("[7] - remover uma peça do estoque");
 			System.out.println("[8] - voltar para o menu principal");
@@ -47,6 +46,9 @@ public class ProgramaLojaMessias {
 				break;
 			case 4:
 				pecaDao.listaPecaPorLetra(teclado);
+				break;
+			case 5:
+				pecaDao.listaTodasAsPecasPorModelo(teclado);
 				break;
 
 			case 6:
@@ -102,12 +104,6 @@ public class ProgramaLojaMessias {
 		PecaDAO pecaDao = new PecaDAO(manager);
 		VendaDAO vendaDao = new VendaDAO(manager);
 
-		/*
-		 * List<Peca> pecas = lojaDao.listarPecas(); for (Peca peca : pecas ) {
-		 * System.out.println(peca); }
-		 * 
-		 * } }
-		 */
 
 		int opcaoMenuCadastroPrincipal = 0;
 

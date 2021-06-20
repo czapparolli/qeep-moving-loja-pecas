@@ -39,8 +39,7 @@ public class VendaDAO {
 				venda = manager.find(Peca.class, codigoDeBarras);
 
 			} catch (Exception e) {
-				System.err
-						.println("\nVenda não computada, não existe o código de barras informado... Tente novamente !");
+				System.err.println("\nVenda não computada, não existe o código de barras informado... Tente novamente !");
 			}
 
 			System.out.print("\nDigite quantas unidades desta peça serão vendidas:  ");
@@ -67,7 +66,6 @@ public class VendaDAO {
 			manager.merge(venda);
 			manager.getTransaction().commit();
 
-			//relatorio.add(venda);
 
 			acumuladoraTeste = acumuladoraTeste + (venda.getPrecoVenda() * quantidade);
 			
@@ -82,7 +80,6 @@ public class VendaDAO {
 			}
 
 		} while (parada != 1);
-		manager.close();
 	}
 	
 
