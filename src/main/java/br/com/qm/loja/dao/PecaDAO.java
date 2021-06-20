@@ -18,6 +18,8 @@ public class PecaDAO {
 	
 	private List<Peca> relatorioInicio = new ArrayList();
 	private List<Peca> relatorioFim = new ArrayList();
+	
+	private VendaDAO vendaDao = new VendaDAO(manager);
 
 	public PecaDAO(EntityManager manager) {
 		EntityManagerFactory factory = Persistence.createEntityManagerFactory("pecas");
@@ -208,14 +210,17 @@ public class PecaDAO {
 		Peca inicio = new Peca();
 		Query query = manager.createQuery("select p from Peca as p order by p.codigoDeBarras");
 		
-		List<Peca> relatorioFim = query.getResultList();
+		List<Peca> relatorioInicio = query.getResultList();
 		for (Peca consulta : relatorioFim ) {
-			System.out.println("-------------------------------------------------");
-			System.out.printf(
-					"\nCódigo de barras: %d \nNome da peça: %s \nModelo do carro: %s \nPreço de custo: R$ %.2f \nPreço de venda: R$ %.2f \nQuantidade atual em estoque: %d \n\n",
-					consulta.getCodigoDeBarras(), consulta.getNome(), consulta.getModeloCarro(),
-					consulta.getPrecoCusto(), consulta.getPrecoVenda(), consulta.getQuantidadeEmEstoque(),
-					consulta.getCategoria());
+			/*
+			 * System.out.println("-------------------------------------------------");
+			 * System.out.printf(
+			 * "\nCódigo de barras: %d \nNome da peça: %s \nModelo do carro: %s \nPreço de custo: R$ %.2f \nPreço de venda: R$ %.2f \nQuantidade atual em estoque: %d \n\n"
+			 * , consulta.getCodigoDeBarras(), consulta.getNome(),
+			 * consulta.getModeloCarro(), consulta.getPrecoCusto(),
+			 * consulta.getPrecoVenda(), consulta.getQuantidadeEmEstoque(),
+			 * consulta.getCategoria());
+			 */
 		}
 		return query.getResultList();
 
@@ -226,17 +231,20 @@ public class PecaDAO {
 		Peca fim = new Peca();
 		Query query = manager.createQuery("select p from Peca as p order by p.codigoDeBarras");
 		
-		List<Peca> pecas = query.getResultList();
-		for (Peca consulta : pecas ) {
-			System.out.println("-------------------------------------------------");
-			System.out.printf(
-					"\nCódigo de barras: %d \nNome da peça: %s \nModelo do carro: %s \nPreço de custo: R$ %.2f \nPreço de venda: R$ %.2f \nQuantidade atual em estoque: %d \n\n",
-					consulta.getCodigoDeBarras(), consulta.getNome(), consulta.getModeloCarro(),
-					consulta.getPrecoCusto(), consulta.getPrecoVenda(), consulta.getQuantidadeEmEstoque(),
-					consulta.getCategoria());
-		}
+		List<Peca> relatorioFim = query.getResultList();
+		/*
+		 * for (Peca consulta : relatorioFim ) {
+		 * System.out.println("-------------------------------------------------");
+		 * System.out.printf(
+		 * "\nCódigo de barras: %d \nNome da peça: %s \nModelo do carro: %s \nPreço de custo: R$ %.2f \nPreço de venda: R$ %.2f \nQuantidade atual em estoque: %d \n\n"
+		 * , consulta.getCodigoDeBarras(), consulta.getNome(),
+		 * consulta.getModeloCarro(), consulta.getPrecoCusto(),
+		 * consulta.getPrecoVenda(), consulta.getQuantidadeEmEstoque(),
+		 * consulta.getCategoria()); }
+		 */
 		return query.getResultList();
 
 	}
+	
 
 }

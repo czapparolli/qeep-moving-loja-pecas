@@ -87,9 +87,7 @@ public class ProgramaLojaMessias {
 				vendaDao.realizaVenda(teclado);
 				break;
 			case 2:
-				relatorioDao.escritor();
-				break;
-			case 3:
+				//vendaDao.escritor();
 				break;
 			default:
 				System.out.println("Opção inválida!");
@@ -103,7 +101,6 @@ public class ProgramaLojaMessias {
 		Scanner teclado = new Scanner(System.in);
 		PecaDAO pecaDao = new PecaDAO(manager);
 		VendaDAO vendaDao = new VendaDAO(manager);
-
 
 		int opcaoMenuCadastroPrincipal = 0;
 

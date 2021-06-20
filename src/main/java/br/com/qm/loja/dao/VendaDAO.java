@@ -1,5 +1,8 @@
 package br.com.qm.loja.dao;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -13,8 +16,7 @@ import br.com.qm.loja.pojo.Peca;
 public class VendaDAO {
 
 	private EntityManager manager;
-	private float acumuladoraTeste = 0;
-	 
+	float acumuladoraTeste = 0;
 
 	List<Peca> relatorio = new ArrayList();
 
@@ -29,6 +31,7 @@ public class VendaDAO {
 		int codigoDeBarras = 0;
 		int quantidade = 0;
 		Peca venda = new Peca();
+		PecaDAO pecaDao = new PecaDAO(manager);
 
 		do {
 			try {
@@ -39,7 +42,8 @@ public class VendaDAO {
 				venda = manager.find(Peca.class, codigoDeBarras);
 
 			} catch (Exception e) {
-				System.err.println("\nVenda não computada, não existe o código de barras informado... Tente novamente !");
+				System.err
+						.println("\nVenda não computada, não existe o código de barras informado... Tente novamente !");
 			}
 
 			System.out.print("\nDigite quantas unidades desta peça serão vendidas:  ");
@@ -58,29 +62,60 @@ public class VendaDAO {
 
 			venda.getQuantidadeEmEstoque();
 
-			atualizaEstoque =  venda.getQuantidadeEmEstoque()  - quantidade;
-
+			atualizaEstoque = venda.getQuantidadeEmEstoque() - quantidade;
+			
 			venda.setQuantidadeEmEstoque(atualizaEstoque);
 
 			manager.getTransaction().begin();
 			manager.merge(venda);
 			manager.getTransaction().commit();
 
-
 			acumuladoraTeste = acumuladoraTeste + (venda.getPrecoVenda() * quantidade);
 			
 			
-			for (Peca consulta : relatorio) {
-				System.out.println("-------------------------------------------------");
-				System.out.printf(
-						"\nCódigo de barras: %d \nNome da peça: %s \nModelo do carro: %s \nPreço de custo: R$ %.2f \nPreço de venda: R$ %.2f \nQuantidade atual em estoque: %d \n\n",
-						consulta.getCodigoDeBarras(), consulta.getNome(), consulta.getModeloCarro(),
-						consulta.getPrecoCusto(), consulta.getPrecoVenda(), consulta.getQuantidadeEmEstoque(),
-						consulta.getCategoria());
-			}
 
 		} while (parada != 1);
 	}
-	
+
+	public void escritor() throws IOException {
+		PecaDAO pecaDao = new PecaDAO(manager);
+
+		VendaDAO vendaDao = new VendaDAO(manager);
+		List<Peca> teste = pecaDao.fimEstoquePrograma();
+		List<Peca> fim = pecaDao.fimEstoquePrograma();
+		List<Peca> inicio = pecaDao.inicioEstoquePrograma();
+
+		FileWriter writer = new FileWriter("Relatório de vendas diário.txt");
+		PrintWriter gravarArq = new PrintWriter(writer);
+
+		
+
+		int quantidade = 2;
+
+		/*
+		 * for (Peca consultaTeste : inicio) {
+		 * 
+		 * quantidade = consultaTeste.getQuantidadeEmEstoque(); }
+		 * 
+		 * for (Peca consultaTeste2 : fim) {
+		 * 
+		 * quantidade = quantidade - consultaTeste2.getQuantidadeEmEstoque(); }
+		 */
+		
+		gravarArq.println(
+				"---------------------------------------------------------------------------------------------------------------------------------------\n");
+		for (Peca str : teste) {
+			
+			gravarArq.printf("Código de barras: %d | Nome da peça: %s | Quantidade: %d | Valor de venda: R$ %.2f\n",
+					str.getCodigoDeBarras(), str.getNome(), str.getQuantidadeEmEstoque(), str.getPrecoVenda());
+
+			gravarArq.println(
+					"\n---------------------------------------------------------------------------------------------------------------------------------------\n");
+
+		}
+		gravarArq.printf("\nO total de vendas no dia de hoje foi R$ %.2f \n", acumuladoraTeste);
+		writer.close();
+		System.out.println("\nRelatório diário gerado com sucesso, verifique o arquivo TXT na pasta do programa");
+	}
 
 }
