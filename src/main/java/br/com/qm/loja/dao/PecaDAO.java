@@ -15,6 +15,9 @@ import br.com.qm.loja.pojo.Peca;
 public class PecaDAO {
 
 	private EntityManager manager;
+	
+	private List<Peca> relatorioInicio = new ArrayList();
+	private List<Peca> relatorioFim = new ArrayList();
 
 	public PecaDAO(EntityManager manager) {
 		EntityManagerFactory factory = Persistence.createEntityManagerFactory("pecas");
@@ -56,6 +59,7 @@ public class PecaDAO {
 		manager.getTransaction().commit();
 
 		System.out.println("Peça cadastrada com sucesso !");
+		manager.close();
 	}
 
 	public void consultaPecaPorCodigo(Scanner teclado) {
@@ -72,22 +76,21 @@ public class PecaDAO {
 				"\nCódigo de barras: %d \nNome da peça: %s \nModelo do carro: %s \nPreço de custo: R$ %.2f \nPreço de venda: R$ %.2f \nQuantidade atual em estoque: %d \n",
 				consulta.getCodigoDeBarras(), consulta.getNome(), consulta.getModeloCarro(), consulta.getPrecoCusto(),
 				consulta.getPrecoVenda(), consulta.getQuantidadeEmEstoque(), consulta.getCategoria());
-
+		manager.close();
 	}
 
 	public List<Peca> listaTodasAsPecasEmEstoque() {
 
-		// Peca consulta = new Peca();
 
 		System.out.println("\nBem vindo ao menu de listagem de peças, vamos começar...");
 
-		Query query = manager.createQuery("select p from Peca as p");
+		Query query = manager.createQuery("select p from Peca as p where p.quantidadeEmEstoque > 0");
 
 		// query.getResultList();
 
-		List<Peca> pecas = query.getResultList();
+		List<Peca> relatorioInicio = query.getResultList();
 
-		for (Peca consulta1 : pecas) {
+		for (Peca consulta1 : relatorioInicio) {
 			System.out.println("-------------------------------------------------");
 			System.out.printf(
 					"\nCódigo de barras: %d \nNome da peça: %s \nModelo do carro: %s \nPreço de custo: R$ %.2f \nPreço de venda: R$ %.2f \nQuantidade atual em estoque: %d \nCategoria %s \n\n",
@@ -95,7 +98,6 @@ public class PecaDAO {
 					consulta1.getPrecoCusto(), consulta1.getPrecoVenda(), consulta1.getQuantidadeEmEstoque(),
 					consulta1.getCategoria());
 		}
-
 		return query.getResultList();
 	}
 
@@ -106,8 +108,8 @@ public class PecaDAO {
 		System.out.print("\nDigite uma letra para listar todas as peças em estoque começadas por ela: ");
 		String input = teclado.nextLine();
 
-		Query query = manager.createQuery("select p from Peca as p where p.nome like '" + input + "%'");
-		query.setParameter("nome", "'" + input + "%'");
+		Query query = manager.createQuery("select p from Peca as p where p.nome = :nome");
+		query.setParameter("nome", input);
 		// '"+input+"'%");
 
 		List<Peca> pecas = query.getResultList();
@@ -120,8 +122,9 @@ public class PecaDAO {
 					consulta.getPrecoCusto(), consulta.getPrecoVenda(), consulta.getQuantidadeEmEstoque(),
 					consulta.getCategoria());
 		}
-
+		manager.close();
 		return query.getResultList();
+		
 
 	}
 
@@ -131,13 +134,13 @@ public class PecaDAO {
 		System.out.println("\nBem vindo ao menu de consultar peças, vamos começar...");
 		System.out.print("\nDigite uma categoria para listar todas as peças dela:  ");
 		String input = teclado.nextLine();
-		
+
 		Query query = manager.createQuery("select p from Peca as p where p.categoria = :categoria");
 		query.setParameter("categoria", input);
-		//input + "%"
+		// input + "%"
 
 		List<Peca> pecas = query.getResultList();
-		
+
 		if (pecas.equals(null)) {
 			System.out.println("é nulo");
 		} else {
@@ -150,21 +153,68 @@ public class PecaDAO {
 						consulta.getCategoria());
 			}
 		}
+		manager.close();
 
 		return query.getResultList();
 
 	}
 
-	public boolean alteraPeca(Peca loja) {
+	public boolean removePecaPorCodigo(Scanner teclado) {
 
-		Peca lojaDb = manager.find(Peca.class, loja.getCodigoDeBarras());
-		lojaDb.setCodigoDeBarras(0);
+		System.out.println("\nBem vindo ao menu de consultar peças, vamos começar...");
+		System.out.print("\nDigite o número do código de barras da peça para consultar: ");
+		int codigoDeBarras = teclado.nextInt();
 
+		Peca remove = manager.find(Peca.class, codigoDeBarras);
+
+		if (remove == null) {
+			System.out.printf("\nNão foi encontrado nenhuma peça de codigo de barras %i, tente novamente",
+					codigoDeBarras);
+			return false;
+		}
 		manager.getTransaction().begin();
-		manager.merge(lojaDb);
+		manager.remove(remove);
 		manager.getTransaction().commit();
-
+		System.out.printf("Peça %s removida com sucesso\n", remove.getNome());
+		manager.close();
 		return true;
+
+	}
+
+	public List<Peca> inicioEstoquePrograma() {
+
+		Peca inicio = new Peca();
+		Query query = manager.createQuery("select p from Peca as p order by p.codigoDeBarras");
+		
+		List<Peca> relatorioFim = query.getResultList();
+		for (Peca consulta : relatorioFim ) {
+			System.out.println("-------------------------------------------------");
+			System.out.printf(
+					"\nCódigo de barras: %d \nNome da peça: %s \nModelo do carro: %s \nPreço de custo: R$ %.2f \nPreço de venda: R$ %.2f \nQuantidade atual em estoque: %d \n\n",
+					consulta.getCodigoDeBarras(), consulta.getNome(), consulta.getModeloCarro(),
+					consulta.getPrecoCusto(), consulta.getPrecoVenda(), consulta.getQuantidadeEmEstoque(),
+					consulta.getCategoria());
+		}
+		return query.getResultList();
+
+	}
+
+	public List<Peca> fimEstoquePrograma() {
+
+		Peca fim = new Peca();
+		Query query = manager.createQuery("select p from Peca as p order by p.codigoDeBarras");
+		
+		List<Peca> pecas = query.getResultList();
+		for (Peca consulta : pecas ) {
+			System.out.println("-------------------------------------------------");
+			System.out.printf(
+					"\nCódigo de barras: %d \nNome da peça: %s \nModelo do carro: %s \nPreço de custo: R$ %.2f \nPreço de venda: R$ %.2f \nQuantidade atual em estoque: %d \n\n",
+					consulta.getCodigoDeBarras(), consulta.getNome(), consulta.getModeloCarro(),
+					consulta.getPrecoCusto(), consulta.getPrecoVenda(), consulta.getQuantidadeEmEstoque(),
+					consulta.getCategoria());
+		}
+		return query.getResultList();
+
 	}
 
 }
