@@ -9,6 +9,7 @@ http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
 		<!-- Classe referente a entidade -->
 		<class>Peca.java</class>
 		<class>LojaDAO.java</class>
+		 <exclude-unlisted-classes>false</exclude-unlisted-classes>
 		<properties>
 			<property name="javax.persistence.jdbc.driver"
 				value="org.postgresql.Driver" />
@@ -25,6 +26,8 @@ http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
 			<property name="hibernate.show_sql" value="false" />
 			<property name="hibernate.format_sql" value="false" />
 			<property name="hibernate.hbm2ddl.auto" value="update" />
+			<property name="hibernate.generate_statistics" value="false" />
+			<property name="log4j.category.org.hibernate" value="OFF"/>
 			
 
 

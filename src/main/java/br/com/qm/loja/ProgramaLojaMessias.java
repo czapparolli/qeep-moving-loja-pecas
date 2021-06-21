@@ -21,8 +21,7 @@ public class ProgramaLojaMessias {
 		int opcaoMenuGestaoDePecas = 0;
 
 		do {
-			System.out.println("\n------------------- Loja de Auto Peças Messias -------------------\n");
-			System.out.println("\n\n------------------- Menu de gestão e controle de estoque -------------------\n\n");
+			System.out.println("\n------------------- Menu de gestão e controle de estoque -------------------\n");
 			System.out.println("[1] - cadastrar uma nova peça");
 			System.out.println("[2] - consultar uma peça pelo seu código de barras");
 			System.out.println("[3] - listar todas as peças em estoque");
@@ -58,6 +57,7 @@ public class ProgramaLojaMessias {
 				pecaDao.removePecaPorCodigo(teclado);
 				break;
 			case 8:
+				System.out.println("\nVoltando para o menu principal...\n");
 				break;
 			default:
 				System.out.println("Opção inválida!");
@@ -87,7 +87,10 @@ public class ProgramaLojaMessias {
 				vendaDao.realizaVenda(teclado);
 				break;
 			case 2:
-				//vendaDao.escritor();
+				vendaDao.escritor();
+				break;
+			case 3:
+				System.out.println("\nVoltando para o menu principal...\n");
 				break;
 			default:
 				System.out.println("Opção inválida!");
@@ -105,7 +108,7 @@ public class ProgramaLojaMessias {
 		int opcaoMenuCadastroPrincipal = 0;
 
 		do {
-			System.out.println("\n------------------- Loja de Auto Peças Messias -------------------\n\n");
+			System.out.println("------------------- Loja de Auto Peças Messias -------------------\n");
 			System.out.println("[1] - Gestão de peças");
 			System.out.println("[2] - Gerenciamento de vendas");
 			System.out.println("[3] - Para encerrar o programa");
@@ -120,6 +123,7 @@ public class ProgramaLojaMessias {
 				menuVendas(teclado);
 				break;
 			case 3:
+				System.out.println("\nPrograma encerrado com sucesso... Até mais !");
 				break;
 			default:
 				System.out.println("Opção inválida!");
